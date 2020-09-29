@@ -53,6 +53,14 @@
 @help
 This plugin augments the functionality of the map name window and adds additional effects <LunaMapNamePlus>.
 
+==== MZ Plugin Commands ====
+
+Show Window
+- Shows the map name window
+
+Hide Window
+- Hides the map name window
+
 ==== Script Calls ====
 
 Script calls
