@@ -2,7 +2,7 @@
 // Luna_MapNamePlus.js
 //=============================================================================
 //=============================================================================
-// Build Date: 2020-09-22 19:13:11
+// Build Date: 2020-09-28 21:19:11
 //=============================================================================
 //=============================================================================
 // Made with LunaTea -- Haxe
@@ -14,6 +14,15 @@
 @plugindesc This plugin augments the functionality of the map name window and adds additional effects <LunaMapNamePlus>.
 
 @target MV MZ
+
+@command showWindow
+@text Show Window
+@desc Shows the map name window.
+
+
+@command hideWindow
+@text Hide Window
+@desc Hides the map name window.
 
 @param x
 @text Window X Position
@@ -54,6 +63,12 @@
 
 @help
 This plugin augments the functionality of the map name window and adds additional effects <LunaMapNamePlus>.
+
+==== Script Calls ====
+
+Script calls
+LunaMapNamePlus.hideWindow()
+LunaMapNamePlus.showWindow()
 
 MIT License
 Copyright (c) 2020 LunaTechsDev
@@ -112,7 +127,7 @@ class LunaMapNamePlus {
 		let tmp3 = parseInt(params["marqueeSpeed"],10)
 		let tmp4 = params["persistent"].toUpperCase() == "T"
 		LunaMapNamePlus.LMParams = { x : tmp, y : tmp1, alignment : params["alignment"], animation : params["animation"], marquee : tmp2, marqueeSpeed : tmp3, persistent : tmp4}
-		console.log("src/Main.hx:52:",LunaMapNamePlus.LMParams)
+		console.log("src/Main.hx:56:",LunaMapNamePlus.LMParams)
 		
 //=============================================================================
 // Scene_Map
@@ -122,7 +137,7 @@ class LunaMapNamePlus {
 		Scene_Map.prototype.update = function() {
 			let self = this
 			_SceneMapUpdate.call(self)
-			if(LunaMapNamePlus.LMParams.persistent) {
+			if(LunaMapNamePlus.LMParams.persistent && LunaMapNamePlus.showWindowMode) {
 				if(self._mapNameWindow.contentsOpacity == 0) {
 					self._mapNameWindow.show()
 					self._mapNameWindow.open()
@@ -142,6 +157,7 @@ class LunaMapNamePlus {
 			self._marqueeSlide = LunaMapNamePlus.LMParams.marqueeSpeed
 			self._marqueePos = self.contentsWidth() - self.textWidth($gameMap.displayName()[0])
 			self._marqueeComplete = false
+			LunaMapNamePlus.mapNameWindow = self
 			self.move(LunaMapNamePlus.LMParams.x,LunaMapNamePlus.LMParams.y,self.width,self.height)
 		}
 		Window_MapName.prototype.update = function() {
@@ -192,6 +208,12 @@ class LunaMapNamePlus {
 			self.drawBackground(0,0,self.contentsWidth(),self.lineHeight())
 			return;
 		}
+		PluginManager.registerCommand(plugin.name,"showWindow",function(_) {
+			LunaMapNamePlus.showWindow()
+		})
+		PluginManager.registerCommand(plugin.name,"hideWindow",function(_) {
+			LunaMapNamePlus.hideWindow()
+		})
 	}
 	static params() {
 		return LunaMapNamePlus.LMParams;
@@ -200,6 +222,7 @@ class LunaMapNamePlus {
 		win._marqueeSlide = LunaMapNamePlus.LMParams.marqueeSpeed
 		win._marqueePos = self.contentsWidth() - self.textWidth($gameMap.displayName()[0])
 		win._marqueeComplete = false
+		LunaMapNamePlus.mapNameWindow = win
 		win.move(LunaMapNamePlus.LMParams.x,LunaMapNamePlus.LMParams.y,win.width,win.height)
 	}
 	static updateWindow(win) {
@@ -232,6 +255,14 @@ class LunaMapNamePlus {
 			}
 		}
 	}
+	static hideWindow() {
+		LunaMapNamePlus.showWindowMode = false
+		LunaMapNamePlus.mapNameWindow.hide()
+	}
+	static showWindow() {
+		LunaMapNamePlus.showWindowMode = true
+		LunaMapNamePlus.mapNameWindow.show()
+	}
 }
 $hx_exports["LunaMapNamePlus"] = LunaMapNamePlus
 class haxe_iterators_ArrayIterator {
@@ -263,6 +294,7 @@ var $_
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0
 LunaMapNamePlus.listener = new PIXI.utils.EventEmitter()
+LunaMapNamePlus.showWindowMode = true
 LunaMapNamePlus.main()
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this)
 

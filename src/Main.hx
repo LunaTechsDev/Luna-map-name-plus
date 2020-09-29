@@ -1,3 +1,4 @@
+import rm.managers.PluginManager;
 import rm.scenes.Scene_Map;
 import js.Syntax;
 import rm.windows.Window_Base;
@@ -35,6 +36,9 @@ typedef LMParams = {
 class Main {
   public static var LMParams: LMParams = null;
   public static var listener: EventEmitter = Amaryllis.createEventEmitter();
+  public static var showWindowMode: Bool = true;
+
+  public static var mapNameWindow: Window_MapName;
 
   public static function main() {
     var plugin = Globals.Plugins.filter((plugin) -> ~/<LunaMapNamePlus>/ig.match(plugin.description))[0];
@@ -57,7 +61,7 @@ class Main {
     Scene_Map.proto().updateD = () -> {
       sf(Scene_Map, {
         _SceneMapUpdate.call(self);
-        if (LMParams.persistent) {
+        if (LMParams.persistent && showWindowMode) {
           // Have to check contents opacity to reopen the window and keep
           // it persistent on the screen.
           if (self.__mapNameWindow.contentsOpacity == 0) {
@@ -122,6 +126,16 @@ class Main {
         }
       });
     });
+
+    #if !compileMV
+    PluginManager.registerCommand(plugin.name, 'showWindow', (_) -> {
+      showWindow();
+    });
+
+    PluginManager.registerCommand(plugin.name, 'hideWindow', (_) -> {
+      hideWindow();
+    });
+    #end
   }
 
   public static function params() {
@@ -133,6 +147,7 @@ class Main {
       win._marqueeSlide = LMParams.marqueeSpeed;
       win._marqueePos = self.contentsWidth() - self.textWidth(Globals.GameMap.displayName()[0]);
       win._marqueeComplete = false;
+      mapNameWindow = win;
       win.move(LMParams.x, LMParams.y, win.width, win.height);
     }
   }
@@ -177,5 +192,15 @@ class Main {
         #end
       }
     }
+  }
+
+  public static function hideWindow() {
+    showWindowMode = false;
+    mapNameWindow.hide();
+  }
+
+  public static function showWindow() {
+    showWindowMode = true;
+    mapNameWindow.show();
   }
 }

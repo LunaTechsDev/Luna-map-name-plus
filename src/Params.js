@@ -4,6 +4,15 @@
 
 @target MV MZ
 
+@command showWindow
+@text Show Window
+@desc Shows the map name window.
+
+
+@command hideWindow
+@text Hide Window
+@desc Hides the map name window.
+
 @param x
 @text Window X Position
 @desc The x position of the window.
@@ -43,6 +52,12 @@
 
 @help
 This plugin augments the functionality of the map name window and adds additional effects <LunaMapNamePlus>.
+
+==== Script Calls ====
+
+Script calls
+LunaMapNamePlus.hideWindow();
+LunaMapNamePlus.showWindow();
 
 MIT License
 Copyright (c) 2020 LunaTechsDev
